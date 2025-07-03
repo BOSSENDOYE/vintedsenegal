@@ -11,3 +11,7 @@ class NotificationCreateView(generics.CreateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print('Données reçues pour création notification:', request.data)
+        return super().create(request, *args, **kwargs)

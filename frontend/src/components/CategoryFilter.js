@@ -12,7 +12,7 @@ const CategoryFilter = ({ selectedCategory, onSelectCategory }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get('/categories');
+      const response = await api.get('/listings/categories');
       setCategories(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement des catégories', error);
@@ -38,11 +38,7 @@ const CategoryFilter = ({ selectedCategory, onSelectCategory }) => {
   };
 
   const handleSelect = (category, subCategory) => {
-    if (subCategory) {
-      onSelectCategory({ category, subCategory });
-    } else {
-      onSelectCategory({ category });
-    }
+    onSelectCategory(category, subCategory);
   };
 
   return (

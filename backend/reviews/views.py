@@ -7,7 +7,15 @@ class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        print('Données reçues pour création review:', request.data)
+        return super().create(request, *args, **kwargs)
+
 class RatingListCreateView(generics.ListCreateAPIView):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print('Données reçues pour création rating:', request.data)
+        return super().create(request, *args, **kwargs)

@@ -7,6 +7,10 @@ class MessageCreateView(generics.CreateAPIView):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        print('Données reçues pour création message:', request.data)
+        return super().create(request, *args, **kwargs)
+
 class ConversationListView(generics.ListAPIView):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer

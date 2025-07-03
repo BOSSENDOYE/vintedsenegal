@@ -9,10 +9,18 @@ class ListingCreateView(generics.CreateAPIView):
     serializer_class = ListingSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        print('Données reçues pour création annonce:', request.data)
+        return super().create(request, *args, **kwargs)
+
 class ListingUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        print('Données reçues pour modification annonce:', request.data)
+        return super().update(request, *args, **kwargs)
 
 class ListingListView(generics.ListAPIView):
     queryset = Listing.objects.all()
@@ -26,56 +34,181 @@ class CategoriesView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        categories = {
-            "Femmes": {
-                "Vêtements": [
-                    "Traditionnelle", "Sweats et sweats à capuche", "Blazers et tailleurs", "Robes", "Jupes",
-                    "Hauts et t-shirts", "Jeans", "Pantalons et leggings", "Shorts", "Combinaisons et combishorts",
-                    "Maillots de bain", "Lingerie et pyjamas", "Maternité", "Vêtements de sport", "Voir tout", "Autre"
+        categories = [
+            {
+                "name": "Femmes",
+                "subcategories": [
+                    {
+                        "name": "Vêtements",
+                        "subcategories": [
+                            {"name": "Traditionnelle"},
+                            {"name": "Sweats et sweats à capuche"},
+                            {"name": "Blazers et tailleurs"},
+                            {"name": "Robes"},
+                            {"name": "Jupes"},
+                            {"name": "Hauts et t-shirts"},
+                            {"name": "Jeans"},
+                            {"name": "Pantalons et leggings"},
+                            {"name": "Shorts"},
+                            {"name": "Combinaisons et combishorts"},
+                            {"name": "Maillots de bain"},
+                            {"name": "Lingerie et pyjamas"},
+                            {"name": "Maternité"},
+                            {"name": "Vêtements de sport"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Chaussures",
+                        "subcategories": [
+                            {"name": "Ballerines"},
+                            {"name": "Mocassins"},
+                            {"name": "Bottes"},
+                            {"name": "Mules"},
+                            {"name": "Espadrilles"},
+                            {"name": "Chaussures à talons"},
+                            {"name": "Sandales"},
+                            {"name": "Chaussures de sport"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Sacs",
+                        "subcategories": [
+                            {"name": "Sacs de plage"},
+                            {"name": "Pochettes"},
+                            {"name": "Sacs de sport"},
+                            {"name": "Sacs de voyage"},
+                            {"name": "Cartables et sacoches"},
+                            {"name": "Sacs fourre-tout"},
+                            {"name": "Sacs à dos"},
+                            {"name": "Mallettes"},
+                            {"name": "Sacs à main"},
+                            {"name": "Trousses à maquillage"},
+                            {"name": "Sacs à bandoulière"},
+                            {"name": "Porte-monnaie"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Accessoires",
+                        "subcategories": [
+                            {"name": "Ceintures"},
+                            {"name": "Gants"},
+                            {"name": "Accessoires pour cheveux"},
+                            {"name": "Chapeaux et casquettes"},
+                            {"name": "Bijoux"},
+                            {"name": "Porte-clés"},
+                            {"name": "Écharpes"},
+                            {"name": "Lunettes de soleil"},
+                            {"name": "Parapluies"},
+                            {"name": "Montres"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Beauté",
+                        "subcategories": [
+                            {"name": "Maquillage"},
+                            {"name": "Parfums"},
+                            {"name": "Soins du visage"},
+                            {"name": "Accessoires de beauté"},
+                            {"name": "Soins mains"},
+                            {"name": "Manucure"},
+                            {"name": "Soins du corps"},
+                            {"name": "Soins capillaires"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Perruques, mèches",
+                        "subcategories": [
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
                 ],
-                "Chaussures": [
-                    "Ballerines", "Mocassins", "Bottes", "Mules", "Espadrilles", "Chaussures à talons",
-                    "Sandales", "Chaussures de sport", "Voir tout", "Autre"
-                ],
-                "Sacs": [
-                    "Sacs de plage", "Pochettes", "Sacs de sport", "Sacs de voyage", "Cartables et sacoches",
-                    "Sacs fourre-tout", "Sacs à dos", "Mallettes", "Sacs à main", "Trousses à maquillage",
-                    "Sacs à bandoulière", "Porte-monnaie", "Voir tout", "Autre"
-                ],
-                "Accessoires": [
-                    "Ceintures", "Gants", "Accessoires pour cheveux", "Chapeaux et casquettes", "Bijoux",
-                    "Porte-clés", "Écharpes", "Lunettes de soleil", "Parapluies", "Montres", "Voir tout", "Autre"
-                ],
-                "Beauté": [
-                    "Maquillage", "Parfums", "Soins du visage", "Accessoires de beauté", "Soins mains",
-                    "Manucure", "Soins du corps", "Soins capillaires", "Voir tout", "Autre"
-                ],
-                "Perruques, mèches": [
-                    "Voir tout", "Autre"
-                ]
             },
-            "Hommes": {
-                "Vêtements": [
-                    "Traditionnelle", "Manteaux et vestes", "Hauts et t-shirts", "Costumes et blazers",
-                    "Sweats et pulls", "Pantalons", "Shorts", "Sous-vêtements et chaussettes", "Pyjamas",
-                    "Maillots de bain", "Vêtements de sport et accessoires", "Voir tout", "Autre"
+            {
+                "name": "Hommes",
+                "subcategories": [
+                    {
+                        "name": "Vêtements",
+                        "subcategories": [
+                            {"name": "Traditionnelle"},
+                            {"name": "Manteaux et vestes"},
+                            {"name": "Hauts et t-shirts"},
+                            {"name": "Costumes et blazers"},
+                            {"name": "Sweats et pulls"},
+                            {"name": "Pantalons"},
+                            {"name": "Shorts"},
+                            {"name": "Sous-vêtements et chaussettes"},
+                            {"name": "Pyjamas"},
+                            {"name": "Maillots de bain"},
+                            {"name": "Vêtements de sport et accessoires"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Chaussures",
+                        "subcategories": [
+                            {"name": "Traditionnelle"},
+                            {"name": "Mocassins"},
+                            {"name": "Bottes"},
+                            {"name": "Mules"},
+                            {"name": "Espadrilles"},
+                            {"name": "Claquettes et tongs"},
+                            {"name": "Sandales"},
+                            {"name": "Chaussures de sport"},
+                            {"name": "Baskets"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Accessoires",
+                        "subcategories": [
+                            {"name": "Sacs et sacoches"},
+                            {"name": "Bandanas et foulards"},
+                            {"name": "Mouchoirs de poche"},
+                            {"name": "Chapeaux et casquettes"},
+                            {"name": "Bijoux"},
+                            {"name": "Pochettes de costume"},
+                            {"name": "Écharpes et châles"},
+                            {"name": "Lunettes de soleil"},
+                            {"name": "Cravates et nœuds papillons"},
+                            {"name": "Montres"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
+                    {
+                        "name": "Soins",
+                        "subcategories": [
+                            {"name": "Soins visage"},
+                            {"name": "Accessoires"},
+                            {"name": "Soins cheveux"},
+                            {"name": "Soins du corps"},
+                            {"name": "Soins mains et ongles"},
+                            {"name": "Parfums"},
+                            {"name": "Voir tout"},
+                            {"name": "Autre"},
+                        ],
+                    },
                 ],
-                "Chaussures": [
-                    "Traditionnelle", "Mocassins", "Bottes", "Mules", "Espadrilles", "Claquettes et tongs",
-                    "Sandales", "Chaussures de sport", "Baskets", "Voir tout", "Autre"
-                ],
-                "Accessoires": [
-                    "Sacs et sacoches", "Bandanas et foulards", "Mouchoirs de poche", "Chapeaux et casquettes",
-                    "Bijoux", "Pochettes de costume", "Écharpes et châles", "Lunettes de soleil",
-                    "Cravates et nœuds papillons", "Montres", "Voir tout", "Autre"
-                ],
-                "Soins": [
-                    "Soins visage", "Accessoires", "Soins cheveux", "Soins du corps", "Soins mains et ongles",
-                    "Parfums", "Voir tout", "Autre"
-                ]
             },
-            "Enfants": [
-                "Voir tout", "Autre"
-            ]
-        }
+            {
+                "name": "Enfants",
+                "subcategories": [
+                    {"name": "Voir tout"},
+                    {"name": "Autre"},
+                ],
+            },
+        ]
         return Response(categories)

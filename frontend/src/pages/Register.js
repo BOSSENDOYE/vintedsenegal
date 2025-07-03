@@ -109,6 +109,10 @@ const Register = () => {
           S'inscrire
         </button>
       </form>
+      <div className="mt-4 text-center">
+        <span>Déjà inscrit ? </span>
+        <a href="/login" className="text-indigo-600 hover:underline">Se connecter</a>
+      </div>
     </div>
   );
 };

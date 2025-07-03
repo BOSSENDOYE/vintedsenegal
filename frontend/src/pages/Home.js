@@ -175,8 +175,8 @@ const Home = () => {
             <div className="mt-4 flex flex-wrap gap-2">
               {selectedCategory && (
                 <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                  {selectedCategory}
-                  {selectedSubcategory && ` > ${selectedSubcategory}`}
+                  {typeof selectedCategory === 'string' ? selectedCategory : selectedCategory?.category}
+                  {typeof selectedSubcategory === 'string' && selectedSubcategory ? ` > ${selectedSubcategory}` : (selectedCategory?.subCategory ? ` > ${selectedCategory.subCategory}` : '')}
                 </span>
               )}
               {searchQuery && (

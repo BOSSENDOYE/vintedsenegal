@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import CreateListing from '../components/CreateListing';
+import Notification from '../components/Notification';
 import { createListing } from '../services/listingService';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -7,15 +8,26 @@ import { AuthContext } from '../context/AuthContext';
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const [notification, setNotification] = useState(null);
 
   const handleCreateListing = async (listingData) => {
     try {
       await createListing(listingData);
-      alert('Annonce créée avec succès');
-      navigate('/my-listings');
+      setNotification({
+        message: '🎉 Annonce créée avec succès ! Redirection vers votre dashboard...',
+        type: 'success'
+      });
+      
+      // Redirection après 2 secondes pour laisser le temps de voir la notification
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     } catch (error) {
       console.error('Erreur lors de la création de l\'annonce', error);
-      alert('Erreur lors de la création de l\'annonce');
+      setNotification({
+        message: '❌ Erreur lors de la création de l\'annonce. Veuillez réessayer.',
+        type: 'error'
+      });
     }
   };
 
@@ -43,6 +55,15 @@ const CreateListingPage = () => {
 
   return (
     <div className="p-4">
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+          autoClose={true}
+          duration={3000}
+        />
+      )}
       <CreateListing onSubmit={handleCreateListing} />
     </div>
   );

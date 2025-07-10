@@ -9,6 +9,15 @@ export const getListingById = (id) => {
 };
 
 export const createListing = (data) => {
+  // Si c'est un FormData (avec images), ne pas ajouter de Content-Type
+  if (data instanceof FormData) {
+    return api.post('/listings/create/', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  }
+  // Sinon, utiliser JSON
   return api.post('/listings/create/', data);
 };
 

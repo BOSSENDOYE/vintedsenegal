@@ -304,6 +304,40 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Section Vendeurs */}
+      {user && (
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 py-16">
+          <div className="max-w-4xl mx-auto text-center px-4">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              🎉 Bienvenue {user.username || user.email} !
+            </h2>
+            <p className="text-indigo-100 text-lg mb-8">
+              Accédez à votre dashboard pour gérer vos annonces et suivre vos ventes
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Accéder au Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/create-listing')}
+                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition-colors flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Créer une Annonce
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CTA Section */}
       <div className="bg-green-600 py-16">
         <div className="max-w-4xl mx-auto text-center px-4">

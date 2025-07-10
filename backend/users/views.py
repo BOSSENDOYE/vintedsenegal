@@ -27,7 +27,28 @@ class RegisterView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         print('Données reçues pour inscription:', request.data)
-        return super().create(request, *args, **kwargs)
+        try:
+            response = super().create(request, *args, **kwargs)
+            
+            # Générer des tokens JWT pour l'utilisateur créé
+            user = User.objects.get(username=request.data['username'])
+            refresh = RefreshToken.for_user(user)
+            
+            # Ajouter les tokens à la réponse
+            response.data.update({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'message': 'Inscription réussie!'
+            })
+            
+            print(f'Utilisateur créé avec succès: {user.username}')
+            return response
+            
+        except Exception as e:
+            print(f'Erreur lors de l\'inscription: {str(e)}')
+            return Response({
+                'error': f'Erreur lors de l\'inscription: {str(e)}'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]

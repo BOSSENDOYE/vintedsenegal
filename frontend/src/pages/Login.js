@@ -12,12 +12,19 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    
+    // Validation basique
+    if (!email || !password) {
+      setError('Veuillez remplir tous les champs.');
+      return;
+    }
+
     // On suppose que l'email est le username pour la connexion
-    const success = await login({ username: email, password });
-    if (success) {
+    const result = await login({ username: email, password });
+    if (result.success) {
       navigate('/dashboard');
     } else {
-      setError('Email ou mot de passe incorrect.');
+      setError(result.error || 'Email ou mot de passe incorrect.');
     }
   };
 

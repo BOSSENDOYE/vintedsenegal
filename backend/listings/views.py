@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, filters, permissions
-from .models import Listing
+from rest_framework import generics, filters, permissions, status
+from .models import Listing, Category, Photo
 from .serializers import ListingSerializer
 
 class ListingCreateView(generics.CreateAPIView):
@@ -11,7 +11,50 @@ class ListingCreateView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         print('Données reçues pour création annonce:', request.data)
-        return super().create(request, *args, **kwargs)
+        print('Fichiers reçus:', request.FILES)
+        
+        try:
+            # Récupérer les données
+            title = request.data.get('title')
+            description = request.data.get('description')
+            price = request.data.get('price')
+            category_name = request.data.get('category')
+            images = request.FILES.getlist('images')
+            
+            # Valider les données
+            if not all([title, description, price, category_name]):
+                return Response({
+                    'error': 'Tous les champs obligatoires doivent être remplis'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Trouver ou créer la catégorie
+            category, created = Category.objects.get_or_create(name=category_name)
+            
+            # Créer l'annonce
+            listing = Listing.objects.create(
+                title=title,
+                description=description,
+                price=price,
+                category=category,
+                seller=request.user
+            )
+            
+            # Ajouter les images
+            for image in images:
+                Photo.objects.create(
+                    listing=listing,
+                    image=image
+                )
+            
+            # Sérialiser la réponse
+            serializer = self.get_serializer(listing)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            print(f'Erreur lors de la création:', str(e))
+            return Response({
+                'error': f'Erreur lors de la création: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ListingUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Listing.objects.all()
@@ -29,6 +72,21 @@ class ListingListView(generics.ListAPIView):
     search_fields = ['title', 'description', 'category__name']
     ordering_fields = ['price', 'created_at']
     permission_classes = [permissions.AllowAny]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+class ListingDetailView(generics.RetrieveAPIView):
+    queryset = Listing.objects.all()
+    serializer_class = ListingSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 class CategoriesView(APIView):
     permission_classes = [permissions.AllowAny]

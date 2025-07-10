@@ -31,11 +31,25 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(access);
         setRefreshToken(refresh);
         setUser(credentials.username);
-        return true;
+        return { success: true };
       }
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      let errorMessage = 'Une erreur est survenue lors de la connexion.';
+      
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'Email ou mot de passe incorrect.';
+        } else if (error.response.status === 400) {
+          errorMessage = error.response.data?.detail || 'Données de connexion invalides.';
+        } else if (error.response.status >= 500) {
+          errorMessage = 'Erreur serveur. Veuillez réessayer plus tard.';
+        }
+      } else if (error.request) {
+        errorMessage = 'Impossible de se connecter au serveur. Vérifiez votre connexion.';
+      }
+      
+      return { success: false, error: errorMessage };
     }
   };
 

@@ -115,7 +115,7 @@ const Home = () => {
               <button
                 onClick={() => {
                   if (user) {
-                    navigate('/create-listing');
+                    navigate('/dashboard');
                   } else {
                     navigate('/register');
                   }
@@ -305,6 +305,7 @@ const Home = () => {
       </div>
 
       {/* Section Vendeurs */}
+      {/*
       {user && (
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 py-16">
           <div className="max-w-4xl mx-auto text-center px-4">
@@ -337,6 +338,7 @@ const Home = () => {
           </div>
         </div>
       )}
+      */}
 
       {/* CTA Section */}
       <div className="bg-green-600 py-16">

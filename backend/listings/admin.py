@@ -3,7 +3,7 @@ from .models import Listing, Category, Photo
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'category', 'price', 'created_at')
+    list_display = ('id', 'title', 'category', 'price', 'created_at', 'is_active')
     search_fields = ('title', 'description')
 
 @admin.register(Category)

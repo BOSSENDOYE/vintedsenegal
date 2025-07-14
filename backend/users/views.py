@@ -27,28 +27,19 @@ class RegisterView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         print('Données reçues pour inscription:', request.data)
-        try:
-            response = super().create(request, *args, **kwargs)
-            
-            # Générer des tokens JWT pour l'utilisateur créé
-            user = User.objects.get(username=request.data['username'])
-            refresh = RefreshToken.for_user(user)
-            
-            # Ajouter les tokens à la réponse
-            response.data.update({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'message': 'Inscription réussie!'
-            })
-            
-            print(f'Utilisateur créé avec succès: {user.username}')
-            return response
-            
-        except Exception as e:
-            print(f'Erreur lors de l\'inscription: {str(e)}')
-            return Response({
-                'error': f'Erreur lors de l\'inscription: {str(e)}'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        headers = self.get_success_headers(serializer.data)
+        data = serializer.data
+        data.update({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'message': 'Inscription réussie!'
+        })
+        print(f'Utilisateur créé avec succès: {user.username}')
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -56,15 +47,18 @@ class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+        print(f"Login attempt with username: {username}")
         backend = UsernameOrEmailBackend()
         user = backend.authenticate(request, username=username, password=password)
         if user is not None:
+            print(f"Authentication successful for user: {username}")
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             })
         else:
+            print(f"Authentication failed for user: {username}")
             return Response({'detail': 'Identifiants invalides.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class ProfileView(generics.RetrieveUpdateAPIView):

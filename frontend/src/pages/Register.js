@@ -95,142 +95,85 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Créer un compte
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Rejoignez Vinted Dakar pour vendre et acheter
-          </p>
-        </div>
-        
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
-        )}
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Nom d'utilisateur *
-              </label>
-              <input
-                id="username"
-                type="text"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Votre nom d'utilisateur"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email *
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="votre@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                  Prénom
-                </label>
-                <input
-                  id="firstName"
-                  type="text"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                  placeholder="Prénom"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                  Nom
-                </label>
-                <input
-                  id="lastName"
-                  type="text"
-                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                  placeholder="Nom"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Mot de passe *
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Au moins 8 caractères"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password2" className="block text-sm font-medium text-gray-700">
-                Confirmer le mot de passe *
-              </label>
-              <input
-                id="password2"
-                type="password"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Répétez votre mot de passe"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                loading 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
-              }`}
-            >
-              {loading ? 'Inscription en cours...' : 'S\'inscrire'}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <span className="text-sm text-gray-600">
-              Déjà inscrit ?{' '}
-            </span>
-            <a
-              href="/login"
-              className="font-medium text-green-600 hover:text-green-500"
-            >
-              Se connecter
-            </a>
-          </div>
-        </form>
+    <div className="p-4 max-w-md mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Créer un compte</h1>
+      {error && <p className="text-red-600 mb-4">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="username" className="block mb-2">Nom d'utilisateur *</label>
+        <input
+          id="username"
+          type="text"
+          required
+          className="border rounded w-full mb-4 p-2"
+          placeholder="Votre nom d'utilisateur"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <label htmlFor="email" className="block mb-2">Email *</label>
+        <input
+          id="email"
+          type="email"
+          required
+          className="border rounded w-full mb-4 p-2"
+          placeholder="votre@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <label htmlFor="firstName" className="block mb-2">Prénom</label>
+        <input
+          id="firstName"
+          type="text"
+          className="border rounded w-full mb-4 p-2"
+          placeholder="Prénom"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <label htmlFor="lastName" className="block mb-2">Nom</label>
+        <input
+          id="lastName"
+          type="text"
+          className="border rounded w-full mb-4 p-2"
+          placeholder="Nom"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <label htmlFor="password" className="block mb-2">Mot de passe *</label>
+        <input
+          id="password"
+          type="password"
+          required
+          className="border rounded w-full mb-4 p-2"
+          placeholder="Au moins 8 caractères"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <label htmlFor="password2" className="block mb-2">Confirmer le mot de passe *</label>
+        <input
+          id="password2"
+          type="password"
+          required
+          className="border rounded w-full mb-4 p-2"
+          placeholder="Répétez votre mot de passe"
+          value={password2}
+          onChange={(e) => setPassword2(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full text-white px-4 py-2 rounded ${
+            loading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+          }`}
+        >
+          {loading ? 'Inscription en cours...' : 'S\'inscrire'}
+        </button>
+      </form>
+      <div className="text-center mt-4">
+        <span className="text-sm text-gray-600">Déjà inscrit ? </span>
+        <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+          Se connecter
+        </a>
       </div>
     </div>
   );

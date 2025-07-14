@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
 import ListingDetail from './pages/ListingDetail';
@@ -13,6 +13,12 @@ import Messages from './pages/Messages';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import CreateListingPage from './pages/CreateListing';
+import { AuthContext } from './context/AuthContext';
+
+function PrivateRoute({ children }) {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to="/login" />;
+}
 
 const AppRoutes = () => {
   return (
@@ -24,12 +30,12 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/my-listings" element={<MyListings />} />
-      <Route path="/messages" element={<Messages />} />
-      <Route path="/transactions" element={<Transactions />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/create-listing" element={<CreateListingPage />} />
+      <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+      <Route path="/my-listings" element={<PrivateRoute><MyListings /></PrivateRoute>} />
+      <Route path="/messages" element={<PrivateRoute><Messages /></PrivateRoute>} />
+      <Route path="/transactions" element={<PrivateRoute><Transactions /></PrivateRoute>} />
+      <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+      <Route path="/create-listing" element={<PrivateRoute><CreateListingPage /></PrivateRoute>} />
     </Routes>
   );
 };

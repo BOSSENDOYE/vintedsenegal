@@ -62,6 +62,15 @@ const ListingDetail = () => {
     return ['https://via.placeholder.com/600x400?text=Photo+non+disponible'];
   };
 
+  // Fonction utilitaire pour obtenir l'ID numérique du vendeur
+  const getSellerId = () => {
+    if (!listing) return '';
+    if (typeof listing.seller === 'object' && listing.seller.id) return listing.seller.id;
+    if (listing.seller_id) return listing.seller_id;
+    if (!isNaN(Number(listing.seller))) return Number(listing.seller);
+    return '';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -214,7 +223,10 @@ const ListingDetail = () => {
               <div className="space-y-4">
                 {user ? (
                   <>
-                    <button className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                    <button
+                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                      onClick={() => navigate(`/messages?vendeur=${getSellerId()}`)}
+                    >
                       <MessageCircle size={20} />
                       Contacter le vendeur
                     </button>

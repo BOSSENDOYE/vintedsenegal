@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import generics, filters, permissions, status
 from .models import Listing, Category, Photo
 from .serializers import ListingSerializer
+from django.db import models
 
 class ListingCreateView(generics.CreateAPIView):
     queryset = Listing.objects.all()
@@ -66,7 +67,7 @@ class ListingUpdateView(generics.RetrieveUpdateAPIView):
         return super().update(request, *args, **kwargs)
 
 class ListingListView(generics.ListAPIView):
-    queryset = Listing.objects.all()
+    queryset = Listing.objects.filter(is_active=True)
     serializer_class = ListingSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'category__name']
@@ -270,3 +271,40 @@ class CategoriesView(APIView):
             },
         ]
         return Response(categories)
+
+class SellerStatsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        total_listings = Listing.objects.filter(seller=user).count()
+        active_listings = Listing.objects.filter(seller=user, is_active=True).count()
+        sold_items = Listing.objects.filter(seller=user, status='sold').count() if hasattr(Listing, 'status') else 0
+        total_views = Listing.objects.filter(seller=user).aggregate(total=models.Sum('views'))['total'] or 0
+        total_messages = 0  # À personnaliser selon ton modèle de messagerie
+        return Response({
+            'totalListings': total_listings,
+            'activeListings': active_listings,
+            'soldItems': sold_items,
+            'totalViews': total_views,
+            'totalMessages': total_messages
+        })
+
+class SellerListingsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        listings = Listing.objects.filter(seller=request.user)
+        serializer = ListingSerializer(listings, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class ListingDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            listing = Listing.objects.get(pk=pk, seller=request.user)
+        except Listing.DoesNotExist:
+            return Response({'error': 'Annonce non trouvée ou accès refusé.'}, status=status.HTTP_404_NOT_FOUND)
+        listing.delete()
+        return Response({'message': 'Annonce supprimée.'}, status=status.HTTP_204_NO_CONTENT)
